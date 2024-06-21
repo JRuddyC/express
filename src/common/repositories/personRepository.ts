@@ -14,7 +14,9 @@ class SequelizeProductRepository {
         return res
     }
     async findById(id: number | string) {
-        const res = await Person.findByPk(id)
+        const res = await Person.findByPk(id,{
+            attributes:['id','name','surname','ci','age','phone']
+        })
         return res
     }
 

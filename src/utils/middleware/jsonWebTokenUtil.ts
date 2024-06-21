@@ -13,8 +13,8 @@ class JsonWebTokenService {
             refreshToken
         }
     }
-    
-    newToken(payload: object){
+
+    newToken(payload: object) {
         const accessToken = jwt.sign(payload, secret as string, { expiresIn: '1h' })
         return accessToken
     }
@@ -23,7 +23,7 @@ class JsonWebTokenService {
         try {
             const token = req.headers["authorization"]
             if (!token) {
-                return res.send({
+                return res.status(401).send({
                     success: false,
                     data: {
                         key: 'auth',
@@ -35,7 +35,7 @@ class JsonWebTokenService {
             next()
         } catch (error) {
             if (error instanceof TokenExpiredError) {
-                return res.send({
+                return res.status(400).send({
                     success: false,
                     data: {
                         key: 'auth',

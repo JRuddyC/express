@@ -27,13 +27,13 @@ class SequelizeUserRepository {
 
     async verifyUser(username: string) {
         const response = await User.findOne({
-            attributes: ['id', 'username'],
+            attributes: ['id', 'username', 'person_id'],
             where: { username },
             include:
                 [
                     {
                         model: Person,
-                        attributes: ['name', 'surname', 'ci']
+                        attributes: ['id', 'name', 'surname', 'ci']
                     },
                     {
                         model: Role,

@@ -22,6 +22,7 @@ class AuthUsesCases {
             user.password = await this.encryptionService.hashPassword(user.password)
             const response = await this.userRepository.create(user)
             return {
+                statusCode: 200,
                 success: true,
                 data: response
             }
@@ -32,6 +33,7 @@ class AuthUsesCases {
                     msg: "El usuario ya esta en uso"
                 }
                 return {
+                    statusCode: 400,
                     success: false,
                     data: uniqueErrors,
                 };
@@ -45,6 +47,7 @@ class AuthUsesCases {
                     }
                 });
                 return {
+                    statusCode: 400,
                     success: false,
                     data: validationErrors
                 };
@@ -58,6 +61,7 @@ class AuthUsesCases {
             const response = await this.userRepository.verifyUser(username)
             if (!response) {
                 return {
+                    statusCode: 400,
                     success: false,
                     data: {
                         key: 'username',
@@ -72,6 +76,7 @@ class AuthUsesCases {
 
             if (!verify) {
                 return {
+                    statusCode: 400,
                     success: false,
                     data: {
                         key: 'password',
@@ -81,6 +86,7 @@ class AuthUsesCases {
             }
             const token = this.jsonWebTokeService.auth(response.dataValues)
             return {
+                statusCode: 200,
                 success: true,
                 data: {
                     user: response,
@@ -89,6 +95,7 @@ class AuthUsesCases {
             }
         } catch (error) {
             return {
+                statusCode: 400,
                 success: false,
                 data: {
                     key: 'auth',
@@ -106,6 +113,7 @@ class AuthUsesCases {
 
             if (!user) {
                 return {
+                    statusCode: 400,
                     success: false,
                     data: {
                         key: 'auth',
@@ -116,6 +124,7 @@ class AuthUsesCases {
 
             const newToken = this.jsonWebTokeService.newToken(user.dataValues)
             return {
+                statusCode: 200,
                 success: true,
                 data: {
                     user: user,
@@ -125,6 +134,7 @@ class AuthUsesCases {
         } catch (error) {
             if (error instanceof JsonWebTokenError) {
                 return {
+                    statusCode: 400,
                     success: false,
                     data: {
                         key: 'auth',
@@ -132,12 +142,15 @@ class AuthUsesCases {
                     }
                 }
             }
+            return {
+                statusCode: 400,
+                success: false,
+                data: {
+                    key: 'auth',
+                    msg: 'Error de token'
+                }
+            }
         }
-
-        // if (user?.id) {
-        //     const response = await this.userRepository.verifyUser(user.username)
-        // }
-        // return user
     }
 }
 
