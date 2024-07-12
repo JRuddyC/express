@@ -37,6 +37,7 @@ class SequelizeUserRepository {
                     },
                     {
                         model: Role,
+                        as: 'roles',
                         attributes: ['nameRole'],
                         through: {
                             attributes: []

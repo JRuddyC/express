@@ -26,14 +26,16 @@ class SequelizeUserRoleRepository {
         return response
     }
 
-    async findUserRoleByUser(user_id: string) {
-        const response = await UserRole.findAll({
-            where: { user_id },
+    async findUserRoleByUser(id: string) {
+        const response = await User.findOne({
+            where: { id },
             include: [{
                 model: Role,
-                attributes: ['id', 'nameRole']
+                as: 'roles',
+                attributes: ['id', 'nameRole'],
+                through: { attributes: [] }
             }],
-            attributes: ['user_id']
+            attributes: ['id']
         })
         return response
     }

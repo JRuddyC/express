@@ -13,11 +13,19 @@ class UserRoleUsesCases {
                 await this.userRoleUsesCases.assignRole(user_id, item)
             })
             return {
+                statusCode: 200,
                 success: true,
                 data: true
             }
         } catch (error) {
-            return error
+            return {
+                statusCode: 400,
+                success: false,
+                data: {
+                    key: 'userRole',
+                    error: 'Error al asignar rol'
+                }
+            }
         }
     }
 
@@ -31,6 +39,7 @@ class UserRoleUsesCases {
         }
 
         return {
+            statusCode: 400,
             success: false,
             data: {
                 key: 'userRole',
@@ -42,8 +51,9 @@ class UserRoleUsesCases {
     async findUserRoleByUser(user_id: string) {
         try {
             const response = await this.userRoleUsesCases.findUserRoleByUser(user_id)
-            if (response.length > 0)
+            if (response)
                 return {
+                    statusCode: 200,
                     success: true,
                     data: response,
                 }
@@ -52,15 +62,19 @@ class UserRoleUsesCases {
                 msg: "No existe roles para el usuario con id: " + user_id
             }
             return {
+                statusCode: 404,
                 success: false,
                 data: error,
             };
         } catch (error) {
+            console.log(error);
+
             const typeIdError = {
                 key: "id",
                 msg: "Tipo de llave incorrecto"
             }
             return {
+                statusCode: 400,
                 success: false,
                 data: typeIdError
             };

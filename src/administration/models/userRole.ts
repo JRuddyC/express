@@ -28,6 +28,6 @@ UserRole.init(
         modelName: 'UserRole'
     }
 )
-User.belongsToMany(Role, { through: UserRole, foreignKey: 'user_id' })
-Role.belongsToMany(User, { through: UserRole, foreignKey: 'role_id' })
+User.belongsToMany(Role, { through: UserRole, foreignKey: 'user_id', as: 'roles'})
+Role.belongsToMany(User, { through: UserRole, foreignKey: 'role_id', as: 'users' })
 export default UserRole

@@ -6,8 +6,8 @@ const secret = process.env.JWT_SECRET
 class JsonWebTokenService {
 
     auth(payload: object) {
-        const accessToken = jwt.sign(payload, secret as string, { expiresIn: '1h' })
-        const refreshToken = jwt.sign(payload, secret as string, { expiresIn: '1d' })
+        const accessToken = jwt.sign(payload, secret as string, { expiresIn: '1d' })
+        const refreshToken = jwt.sign(payload, secret as string, { expiresIn: '7d' })
         return {
             accessToken,
             refreshToken
@@ -15,7 +15,7 @@ class JsonWebTokenService {
     }
 
     newToken(payload: object) {
-        const accessToken = jwt.sign(payload, secret as string, { expiresIn: '1h' })
+        const accessToken = jwt.sign(payload, secret as string, { expiresIn: '1d' })
         return accessToken
     }
 
@@ -35,7 +35,7 @@ class JsonWebTokenService {
             next()
         } catch (error) {
             if (error instanceof TokenExpiredError) {
-                return res.status(400).send({
+                return res.status(401).send({
                     success: false,
                     data: {
                         key: 'auth',
@@ -44,7 +44,7 @@ class JsonWebTokenService {
                 })
             }
             if (error instanceof JsonWebTokenError) {
-                return res.send({
+                return res.status(401).send({
                     success: false,
                     data: {
                         key: 'token',
@@ -52,7 +52,7 @@ class JsonWebTokenService {
                     }
                 })
             }
-            return res.send({
+            return res.status(401).send({
                 success: false,
                 data: {
                     key: 'auth',

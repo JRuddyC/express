@@ -3,7 +3,7 @@ import IPerson from "../interfaces/IPerson";
 import PersonRepository from "../repositories/personRepository"
 
 class PersonUsesCases {
-    
+
     private personRepository: PersonRepository;
 
     constructor() {
@@ -12,7 +12,10 @@ class PersonUsesCases {
     async create(person: IPerson) {
         try {
             const response = await this.personRepository.create(person)
+            console.log(response);
+
             return {
+                statusCode: 200,
                 success: true,
                 data: response
             }
@@ -23,6 +26,7 @@ class PersonUsesCases {
                     msg: "El CI ya esta en uso"
                 }
                 return {
+                    statusCode: 400,
                     success: false,
                     data: uniqueErrors,
                 };
@@ -36,21 +40,24 @@ class PersonUsesCases {
                     }
                 });
                 return {
+                    statusCode: 400,
                     success: false,
                     data: validationErrors
                 };
             }
         }
     }
-    async findAll() {
-        const response = await this.personRepository.findAll()
-        if (response.length >0) {
+    async findAll(page: number, limit: number) {
+        const response = await this.personRepository.findAll(page, limit)
+        if (response.rows.length > 0) {
             return {
+                statusCode: 200,
                 success: true,
                 data: response
             }
         }
         return {
+            statusCode: 404,
             success: false,
             data: {
                 key: "person",
@@ -63,6 +70,7 @@ class PersonUsesCases {
             const response = await this.personRepository.findById(id)
             if (response)
                 return {
+                    statusCode: 200,
                     success: true,
                     data: response,
                 }
@@ -71,6 +79,7 @@ class PersonUsesCases {
                 msg: "No existe persona con id: " + id
             }
             return {
+                statusCode: 404,
                 success: false,
                 data: error,
             };
@@ -81,6 +90,7 @@ class PersonUsesCases {
                 msg: "Tipo de llave incorrecto"
             }
             return {
+                statusCode: 404,
                 success: false,
                 data: typeIdError
             };
@@ -92,6 +102,7 @@ class PersonUsesCases {
 
             if (personUpdated[0]) {
                 return {
+                    statusCode: 200,
                     success: true,
                     data: personUpdated,
                 }
@@ -101,6 +112,7 @@ class PersonUsesCases {
                 msg: "No existe persona con id: " + id
             }
             return {
+                statusCode: 404,
                 success: false,
                 data: error,
             };
@@ -108,9 +120,10 @@ class PersonUsesCases {
             if (error instanceof UniqueConstraintError) {
                 const uniqueErrors = {
                     key: "ci",
-                    msg: "El CI ya esta en uso"
+                    msg: "El ci ya esta en uso"
                 }
                 return {
+                    statusCode: 400,
                     success: false,
                     data: uniqueErrors,
                 };
@@ -124,6 +137,7 @@ class PersonUsesCases {
                     }
                 });
                 return {
+                    statusCode: 400,
                     success: false,
                     data: validationErrors
                 };

@@ -37,7 +37,7 @@ class UserController {
     async findUserRoleByUserController(req: Request, res: Response) {
         const { user_id } = req.params
         const userRole = await userRoleUsesCases.findUserRoleByUser(user_id)
-        return res.send(userRole)
+        return res.status(userRole.statusCode).send(userRole)
     }
 
     async findUserRoleByRoleController(req: Request, res: Response) {

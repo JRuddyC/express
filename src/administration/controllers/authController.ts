@@ -17,7 +17,7 @@ class AuthController {
     async refreshToken(req: Request, res: Response) {
         const token = req.headers["r-token"]
         const user = await authUsesCases.refreshToken(token as string)
-        return res.send(user)
+        return res.status(user.statusCode).send(user)
     }
 }
 

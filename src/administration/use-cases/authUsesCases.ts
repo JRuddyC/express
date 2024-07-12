@@ -106,14 +106,14 @@ class AuthUsesCases {
     }
 
     async refreshToken(token: string) {
+        
         try {
             const verify = this.jsonWebTokeService.refreshToken(token) as IJwtPayload
             const { username } = verify
             const user = await this.userRepository.verifyUser(username as string)
-
             if (!user) {
                 return {
-                    statusCode: 400,
+                    statusCode: 401,
                     success: false,
                     data: {
                         key: 'auth',
@@ -129,21 +129,21 @@ class AuthUsesCases {
                 data: {
                     user: user,
                 },
-                token: newToken
+                accessToken: newToken
             }
         } catch (error) {
             if (error instanceof JsonWebTokenError) {
                 return {
-                    statusCode: 400,
+                    statusCode: 401,
                     success: false,
                     data: {
-                        key: 'auth',
+                        key: 'refresh',
                         msg: 'Token inválido'
                     }
                 }
             }
             return {
-                statusCode: 400,
+                statusCode: 401,
                 success: false,
                 data: {
                     key: 'auth',
